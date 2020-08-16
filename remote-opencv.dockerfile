@@ -55,16 +55,22 @@ RUN apt-get update \
         libtiff-dev \
         libavformat-dev \
         libpq-dev \
+        libgtk2.0-dev \
+        pkg-config \
     && rm -rf /var/lib/apt/lists/*
 
 WORKDIR /
-ENV OPENCV_VERSION="4.1.1"
+ENV OPENCV_VERSION="4.1.0"
+RUN wget https://github.com/opencv/opencv_contrib/archive/${OPENCV_VERSION}.zip \
+&& unzip ${OPENCV_VERSION}.zip \
+&& rm ${OPENCV_VERSION}.zip
 RUN wget https://github.com/opencv/opencv/archive/${OPENCV_VERSION}.zip \
 && unzip ${OPENCV_VERSION}.zip \
 && mkdir /opencv-${OPENCV_VERSION}/cmake_binary \
 && cd /opencv-${OPENCV_VERSION}/cmake_binary \
 && cmake -DBUILD_TIFF=ON \
   -DBUILD_opencv_java=OFF \
+  -DOPENCV_EXTRA_MODULES_PATH=/opencv_contrib-${OPENCV_VERSION}/modules \
   -DWITH_CUDA=OFF \
   -DWITH_OPENGL=ON \
   -DWITH_OPENCL=ON \
